@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"net/smtp"
 	"os"
@@ -11,21 +12,25 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
-const (
-	dataFile     = "data.json"
-	smtpHost     = "smtp.gmail.com"
-	smtpPort     = "587"
-	senderEmail  = "your-email@gmail.com"
-	senderPass   = "your-email-password"
-	jwtSecretKey = "secret_key"
-)
+const ()
+
+type Config struct {
+	dataFile     string "data.json"
+	smtpHost     string "smtp.gmail.com"
+	smtpPort     string "587"
+	senderEmail  string "your-email@gmail.com"
+	senderPass   string "your-email-password"
+	jwtSecretKey string "secret_key"
+}
 
 type DeadManSwitch struct {
 	User       string    `json:"user"`
 	TriggerAt  time.Time `json:"trigger_at"`
 	Recipients []string  `json:"recipients"`
+	Message    []string  `json:"message"`
 }
 
 type Data struct {
@@ -40,6 +45,12 @@ var data = Data{
 
 func main() {
 	r := gin.Default()
+
+	// Load .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
 	// Load data from JSON file
 	if err := LoadData(); err != nil {
@@ -165,8 +176,9 @@ func AuthMiddleware() gin.HandlerFunc {
 		})
 
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"message": "Error parsing JWT Token"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			c.Abort()
+			return
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
