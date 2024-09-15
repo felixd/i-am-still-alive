@@ -165,7 +165,8 @@ func AuthMiddleware() gin.HandlerFunc {
 		})
 
 		if err != nil {
-			fmt.Errorf("Error parsing token")
+			c.JSON(http.StatusUnauthorized, gin.H{"message": "Error parsing JWT Token"})
+			c.Abort()
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
