@@ -8,6 +8,7 @@ Send message to recipients after Your death/inactivity.
 
 * https://instantiator.dev/post/dead-person-switch/
 * https://www.deadmansswitch.net/
+* https://yankeguo.github.io/lastwill/
 
 ## Author
 
