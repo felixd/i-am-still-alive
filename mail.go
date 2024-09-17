@@ -8,12 +8,13 @@ import (
 // SSL/TLS Email
 
 func SendEmail(recipients []string, subject, body string) error {
-	auth := smtp.PlainAuth("", senderEmail, senderPass, smtpHost)
+	auth := smtp.PlainAuth("", Config.SmtpUser, Config.SmtpPass, Config.SmtpHost)
+
 	to := strings.Join(recipients, ", ")
 	msg := []byte("To: " + to + "\r\n" +
 		"Subject: " + subject + "\r\n" +
 		"\r\n" + body + "\r\n")
-	return smtp.SendMail(smtpHost+":"+smtpPort, auth, senderEmail, recipients, msg)
+	return smtp.SendMail(Config.SmtpHost+":"+Config.SmtpPort, auth, Config.SmtpFromEmail, recipients, msg)
 
 	/*
 

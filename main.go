@@ -1,31 +1,20 @@
 package main
 
 import (
-	"log"
-
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
+)
+
+var (
+	Config Configuration
 )
 
 func main() {
 
-	viper.SetConfigFile(".env")
-	viper.AddConfigPath(".") // look for config in the working directory
-	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			// Config file not found; ignore error if desired
-			log.Println("Config file not found")
-		} else {
-			// Config file was found but another error was produced
-			log.Println("Config file was found but another error was produced")
-		}
-	}
-
-	c := NewConfiguration()
+	Config := NewConfiguration()
 	r := gin.Default()
 
 	// Load data from JSON file
-	if err := LoadData(); err != nil {
+	if err := LoadData(Config.DataFile); err != nil {
 		panic(err)
 	}
 

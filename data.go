@@ -23,18 +23,18 @@ var data = Data{
 	Switches: make(map[string]DeadManSwitch),
 }
 
-func LoadData() error {
+func LoadData(dataFile string) error {
 	file, err := os.ReadFile(dataFile)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return SaveData()
+			return SaveData(Config.DataFile)
 		}
 		return err
 	}
 	return json.Unmarshal(file, &data)
 }
 
-func SaveData() error {
+func SaveData(dataFile string) error {
 	file, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		return err

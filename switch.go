@@ -27,7 +27,7 @@ func CreateSwitch(c *gin.Context) {
 		Recipients: switchRequest.Recipients,
 	}
 
-	if err := SaveData(); err != nil {
+	if err := SaveData(Config.DataFile); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not save data"})
 		return
 	}
@@ -56,7 +56,7 @@ func UpdateSwitch(c *gin.Context) {
 		}
 		data.Switches[username.(string)] = switchData
 
-		if err := SaveData(); err != nil {
+		if err := SaveData(Config.DataFile); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not save data"})
 			return
 		}
@@ -73,7 +73,7 @@ func CheckinSwitch(c *gin.Context) {
 		switchData.TriggerAt = time.Now().Add(time.Hour * 24)
 		data.Switches[username.(string)] = switchData
 
-		if err := SaveData(); err != nil {
+		if err := SaveData(Config.DataFile); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not save data"})
 			return
 		}
@@ -88,7 +88,7 @@ func DeleteSwitch(c *gin.Context) {
 	username, _ := c.Get("username")
 	delete(data.Switches, username.(string))
 
-	if err := SaveData(); err != nil {
+	if err := SaveData(Config.DataFile); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not save data"})
 		return
 	}
@@ -112,7 +112,7 @@ func CheckExpiredSwitches() {
 
 				delete(data.Switches, username)
 
-				if err := SaveData(); err != nil {
+				if err := SaveData(Config.DataFile); err != nil {
 					fmt.Println("Error saving data after trigger")
 				}
 			}

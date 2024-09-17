@@ -27,7 +27,7 @@ func Signup(c *gin.Context) {
 	}
 
 	data.Users[user.Username] = user.Password
-	if err := SaveData(); err != nil {
+	if err := SaveData(Config.DataFile); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not save data"})
 		return
 	}
