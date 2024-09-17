@@ -25,7 +25,6 @@ curl -X DELETE http://$HOST:$PORT/switch/delete -H "Authorization: $TOKEN"
 
 ```
 
-
 ## Other projects
 
 * https://instantiator.dev/post/dead-person-switch/
