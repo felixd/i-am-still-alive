@@ -21,16 +21,7 @@ func main() {
 		}
 	}
 
-	c := configuration{
-		app_name:      "FlameIT Dead Person Switch",
-		app_namespace: "flameit",
-		app_acronym:   "fitdps",
-
-		server_port: viper.GetString("SERVER_PORT"),
-		server_host: viper.GetString("SERVER_HOST"),
-		switch_life: viper.GetDuration("SWITCH_LIFE"),
-	}
-
+	c := NewConfiguration()
 	r := gin.Default()
 
 	// Load data from JSON file

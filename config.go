@@ -2,7 +2,7 @@ package main
 
 import "time"
 
-type configuration struct {
+type Configuration struct {
 	app_name      string
 	app_namespace string
 	app_acronym   string
@@ -30,3 +30,18 @@ type configuration struct {
 	// 1814400000000000 ns -> 21 days
 	switch_life time.Duration
 }
+
+func NewConfig() *Configuration {
+	c := Configuration{}
+	
+	app_name:      "FlameIT Dead Person Switch",
+	app_namespace: "flameit",
+	app_acronym:   "fitdps",
+
+	server_port: viper.GetString("SERVER_PORT"),
+	server_host: viper.GetString("SERVER_HOST"),
+	
+	smtp_host: ,
+	switch_life: viper.GetDuration("SWITCH_LIFE"),
+}
+
