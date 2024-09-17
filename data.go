@@ -3,25 +3,16 @@ package main
 import (
 	"encoding/json"
 	"os"
-	"time"
 )
 
-type DeadManSwitch struct {
-	User        string        `json:"user"`
-	SwitchDelay time.Duration `json:"switch_delay"`
-	TriggerAt   time.Time     `json:"trigger_at"`
-	Recipients  []string      `json:"recipients"`
-	Message     []string      `json:"message"`
-}
-
 type Data struct {
-	Users    map[string]string        `json:"users"`
-	Switches map[string]DeadManSwitch `json:"switches"`
+	Users    map[string]string `json:"users"`
+	Switches map[string]Switch `json:"switches"`
 }
 
 var data = Data{
 	Users:    make(map[string]string),
-	Switches: make(map[string]DeadManSwitch),
+	Switches: make(map[string]Switch),
 }
 
 func LoadData(fn string) error {

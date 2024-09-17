@@ -8,23 +8,33 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type Switch struct {
+	User       string        `json:"user"`
+	Duration   time.Duration `json:"duration"`
+	TriggerAt  time.Time     `json:"trigger_at"`
+	Recipients []string      `json:"recipients"`
+	Message    []string      `json:"message"`
+}
+
 func CreateSwitch(c *gin.Context) {
 	username, _ := c.Get("username")
-	var switchRequest struct {
-		Duration   int      `json:"duration"`
-		Recipients []string `json:"recipients"`
-	}
+	// var switchRequest struct {
+	// 	Duration   int      `json:"duration"`
+	// 	Recipients []string `json:"recipients"`
+	// }
 
-	if err := c.ShouldBindJSON(&switchRequest); err != nil {
+	r := Switch{}
+
+	if err := c.ShouldBindJSON(&r); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	triggerTime := time.Now().Add(time.Duration(switchRequest.Duration) * time.Hour)
-	data.Switches[username.(string)] = DeadManSwitch{
+	triggerTime := time.Now().Add(time.Duration(r.Duration) * time.Hour)
+	data.Switches[username.(string)] = Switch{
 		User:       username.(string),
 		TriggerAt:  triggerTime,
-		Recipients: switchRequest.Recipients,
+		Recipients: r.Recipients,
 	}
 
 	if err := SaveData(Config.DataFile); err != nil {
@@ -38,8 +48,9 @@ func CreateSwitch(c *gin.Context) {
 func UpdateSwitch(c *gin.Context) {
 	username, _ := c.Get("username")
 	var updateRequest struct {
-		Duration   int      `json:"duration"`
+		Duration   int      `json:"duration"` // Hours
 		Recipients []string `json:"recipients"`
+		Message    string   `json:"message"`
 	}
 
 	if err := c.ShouldBindJSON(&updateRequest); err != nil {
@@ -49,7 +60,9 @@ func UpdateSwitch(c *gin.Context) {
 
 	if switchData, exists := data.Switches[username.(string)]; exists {
 		if updateRequest.Duration > 0 {
-			switchData.TriggerAt = time.Now().Add(time.Duration(updateRequest.Duration) * time.Hour)
+			d := time.Duration(updateRequest.Duration) * time.Hour
+			switchData.TriggerAt = time.Now().Add(d)
+			switchData.Duration = d
 		}
 		if len(updateRequest.Recipients) > 0 {
 			switchData.Recipients = updateRequest.Recipients

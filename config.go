@@ -33,8 +33,8 @@ type Configuration struct {
 
 	JwtSecretKey string `mapstructure:"JWT_SECRET_KEY"`
 
-	// 1814400000000000 ns -> 21 days
-	SwitchDefaultLife time.Duration
+	// Int value, hours
+	SwitchDefaultDuration time.Duration
 }
 
 func NewConfiguration() *Configuration {
@@ -61,13 +61,10 @@ func NewConfiguration() *Configuration {
 		log.Fatal("Environment can't be loaded: ", err)
 	}
 
-	t, err := time.ParseDuration(viper.GetString("SWITCH_DEFAULT_LIFE"))
-	if err != nil {
-		log.Fatal("Error parsing Switch Default Life Time : ", err)
-	}
+	t := time.Duration(viper.GetInt64("SWITCH_DEFAULT_DURATION")) * time.Hour
 
 	if t > 0 {
-		c.SwitchDefaultLife = t
+		c.SwitchDefaultDuration = t
 	}
 
 	if c.AppEnv == "development" {

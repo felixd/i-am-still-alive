@@ -13,7 +13,9 @@ var (
 func main() {
 
 	Config := NewConfiguration()
-	fmt.Println(Config)
+	if c.AppEnv == "development" {
+		fmt.Println(Config)
+	}
 
 	if Config.AppEnv == "production" {
 		gin.SetMode(gin.ReleaseMode)

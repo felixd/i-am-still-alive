@@ -1,4 +1,4 @@
-module flameit-deadmanswitch
+module flameit-deadpersonswitch
 
 go 1.23.1
 
