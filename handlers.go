@@ -11,6 +11,7 @@ import (
 )
 
 func Signup(c *gin.Context) {
+
 	var user struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
@@ -28,6 +29,7 @@ func Signup(c *gin.Context) {
 
 	data.Users[user.Username] = user.Password
 	if err := SaveData(Config.DataFile); err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not save data"})
 		return
 	}

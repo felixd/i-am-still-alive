@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 )
 
@@ -27,6 +28,15 @@ func LoadData(fn string) error {
 }
 
 func SaveData(fn string) error {
+
+	if fn == "" {
+
+	}
+
+	if Config.AppEnv == "development" {
+		fmt.Println(data)
+	}
+
 	file, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		return err

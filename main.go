@@ -7,13 +7,14 @@ import (
 )
 
 var (
-	Config Configuration
+	Config *Configuration // Pointer to Configuration
 )
 
 func main() {
 
-	Config := NewConfiguration()
-	if c.AppEnv == "development" {
+	Config = NewConfiguration()
+
+	if Config.AppEnv == "development" {
 		fmt.Println(Config)
 	}
 

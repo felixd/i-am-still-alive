@@ -67,10 +67,6 @@ func NewConfiguration() *Configuration {
 		c.SwitchDefaultDuration = t
 	}
 
-	if c.AppEnv == "development" {
-		log.Println("The App is running in development env")
-	}
-
 	return &c
 
 }
