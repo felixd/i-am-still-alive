@@ -14,6 +14,11 @@ func main() {
 
 	Config := NewConfiguration()
 	fmt.Println(Config)
+
+	if Config.AppEnv == "production" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	r := gin.Default()
 
 	// Load data from JSON file
@@ -28,14 +33,14 @@ func main() {
 	authorized := r.Group("/switch")
 	authorized.Use(AuthMiddleware())
 	{
-		authorized.POST("/create", CreateSwitch)
-		authorized.GET("/checkin", CheckinSwitch)
-		authorized.DELETE("/delete", DeleteSwitch)
-		authorized.PUT("/update", UpdateSwitch)
+		authorized.POST("/create", CreateSwitch)   // Create Dead Person Switch
+		authorized.GET("/checkin", CheckinSwitch)  // Update Switch timeout
+		authorized.DELETE("/delete", DeleteSwitch) // Remove Switch
+		authorized.PUT("/update", UpdateSwitch)    // Update Switch
 	}
 
 	// Periodic check for triggered switches
 	go CheckExpiredSwitches()
 
-	r.Run(":8080")
+	r.Run(":" + Config.ServerPort)
 }

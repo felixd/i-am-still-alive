@@ -9,9 +9,9 @@ import (
 
 type Configuration struct {
 	AppEnv       string `mapstructure:"APP_ENV"`
-	AppName      string `mapstructure:"APP_ENV"`
-	AppNamespace string `mapstructure:"APP_ENV"`
-	AppAcronym   string `mapstructure:"APP_ENV"`
+	AppName      string
+	AppNamespace string
+	AppAcronym   string
 
 	DatabaseHost string `mapstructure:"DATABASE_HOST"`
 	DatabasePort string `mapstructure:"DATABASE_PORT"`
@@ -44,10 +44,12 @@ func NewConfiguration() *Configuration {
 	c.AppName = "FlameIT Dead Person Switch"
 	c.AppNamespace = "flameit"
 	c.AppAcronym = "fitdps"
+	c.AppEnv = "development"
 	c.DataFile = "data.json"
 
 	viper.SetConfigFile(".env")
 	viper.AddConfigPath(".") // look for config in the working directory
+	viper.AutomaticEnv()
 
 	err := viper.ReadInConfig()
 	if err != nil {
@@ -63,6 +65,7 @@ func NewConfiguration() *Configuration {
 	if err != nil {
 		log.Fatal("Error parsing Switch Default Life Time : ", err)
 	}
+
 	if t > 0 {
 		c.SwitchDefaultLife = t
 	}
