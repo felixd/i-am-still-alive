@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,6 +13,7 @@ var (
 func main() {
 
 	Config := NewConfiguration()
+	fmt.Println(Config)
 	r := gin.Default()
 
 	// Load data from JSON file

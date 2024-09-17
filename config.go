@@ -59,6 +59,14 @@ func NewConfiguration() *Configuration {
 		log.Fatal("Environment can't be loaded: ", err)
 	}
 
+	t, err := time.ParseDuration(viper.GetString("SWITCH_DEFAULT_LIFE"))
+	if err != nil {
+		log.Fatal("Error parsing Switch Default Life Time : ", err)
+	}
+	if t > 0 {
+		c.SwitchDefaultLife = t
+	}
+
 	if c.AppEnv == "development" {
 		log.Println("The App is running in development env")
 	}

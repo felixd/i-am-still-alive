@@ -13,6 +13,7 @@ func SendEmail(recipients []string, subject, body string) error {
 	to := strings.Join(recipients, ", ")
 	msg := []byte("To: " + to + "\r\n" +
 		"Subject: " + subject + "\r\n" +
+		"From: " + Config.SmtpFromEmail + "\r\n" +
 		"\r\n" + body + "\r\n")
 	return smtp.SendMail(Config.SmtpHost+":"+Config.SmtpPort, auth, Config.SmtpFromEmail, recipients, msg)
 
