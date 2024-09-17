@@ -13,30 +13,25 @@ type Switch struct {
 	Duration   time.Duration `json:"duration"`
 	TriggerAt  time.Time     `json:"trigger_at"`
 	Recipients []string      `json:"recipients"`
-	Message    []string      `json:"message"`
+	Message    string        `json:"message"`
 }
 
 func CreateSwitch(c *gin.Context) {
-	username, _ := c.Get("username")
-	// var switchRequest struct {
-	// 	Duration   int      `json:"duration"`
-	// 	Recipients []string `json:"recipients"`
-	// }
 
 	r := Switch{}
-
 	if err := c.ShouldBindJSON(&r); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
+	username, _ := c.Get("username")
 	triggerTime := time.Now().Add(time.Duration(r.Duration) * time.Hour)
-	data.Switches[username.(string)] = Switch{
-		User:       username.(string),
-		TriggerAt:  triggerTime,
-		Recipients: r.Recipients,
-	}
+	r.User = username.(string)
+	r.TriggerAt = triggerTime
 
+	data.Switches[username.(string)] = r
+
+	// Save to "db" (JSON file)
 	if err := SaveData(Config.DataFile); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not save data"})
 		return
