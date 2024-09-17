@@ -3,7 +3,25 @@ package main
 import (
 	"encoding/json"
 	"os"
+	"time"
 )
+
+type DeadManSwitch struct {
+	User       string    `json:"user"`
+	TriggerAt  time.Time `json:"trigger_at"`
+	Recipients []string  `json:"recipients"`
+	Message    []string  `json:"message"`
+}
+
+type Data struct {
+	Users    map[string]string        `json:"users"`
+	Switches map[string]DeadManSwitch `json:"switches"`
+}
+
+var data = Data{
+	Users:    make(map[string]string),
+	Switches: make(map[string]DeadManSwitch),
+}
 
 func LoadData() error {
 	file, err := os.ReadFile(dataFile)

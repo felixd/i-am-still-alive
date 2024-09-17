@@ -1,0 +1,26 @@
+# Server configurations
+server:
+  host: "localhost"
+  port: 8000
+
+# Database credentials
+database:
+  user: ""
+  pass: ""
+  name: ""
+  port: ""
+  host: ""
+  file: "data.json"
+
+# SMTP Mail server configuration
+smtp:
+  host: ""
+  port: ""
+  user: ""
+  pass: ""
+  from_label: "FlameIT - Dead Person Switch"
+  from_email: ""
+
+# JWT JSON Web Token
+jwt:
+  secret_key: ""

@@ -1,37 +1,36 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-	"os"
-	"time"
+	"log"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
-
-const (
-	dataFile = "data.json"
-)
-
-type DeadManSwitch struct {
-	User       string    `json:"user"`
-	TriggerAt  time.Time `json:"trigger_at"`
-	Recipients []string  `json:"recipients"`
-	Message    []string  `json:"message"`
-}
-
-type Data struct {
-	Users    map[string]string        `json:"users"`
-	Switches map[string]DeadManSwitch `json:"switches"`
-}
-
-var data = Data{
-	Users:    make(map[string]string),
-	Switches: make(map[string]DeadManSwitch),
-}
 
 func main() {
+
+	viper.SetConfigFile(".env")
+	viper.AddConfigPath(".") // look for config in the working directory
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			// Config file not found; ignore error if desired
+			log.Println("Config file not found")
+		} else {
+			// Config file was found but another error was produced
+			log.Println("Config file was found but another error was produced")
+		}
+	}
+
+	c := configuration{
+		app_name:      "FlameIT Dead Person Switch",
+		app_namespace: "flameit",
+		app_acronym:   "fitdps",
+
+		server_port: viper.GetString("FITDPS_SERVER_PORT"),
+		server_host: viper.GetString("FITDPS_SERVER_HOST"),
+		switch_life: viper.GetDuration("FITDPS_SWITCH_LIFE"),
+	}
+
 	r := gin.Default()
 
 	// Load data from JSON file
@@ -56,89 +55,4 @@ func main() {
 	go CheckExpiredSwitches()
 
 	r.Run(":8080")
-}
-
-func Signup(c *gin.Context) {
-	var user struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
-
-	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if _, exists := data.Users[user.Username]; exists {
-		c.JSON(http.StatusConflict, gin.H{"message": "User already exists"})
-		return
-	}
-
-	data.Users[user.Username] = user.Password
-	if err := SaveData(); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not save data"})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "Signup successful"})
-}
-
-func Login(c *gin.Context) {
-	var user struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
-
-	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if pwd, exists := data.Users[user.Username]; !exists || pwd != user.Password {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid credentials"})
-		return
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": user.Username,
-		"exp":      time.Now().Add(time.Hour * 72).Unix(),
-	})
-
-	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Could not generate token"})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
-}
-
-func AuthMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		tokenString := c.GetHeader("Authorization")
-		if tokenString == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"message": "No authorization token provided"})
-			c.Abort()
-			return
-		}
-
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, fmt.Errorf("Unexpected signing method")
-			}
-			return []byte(os.Getenv("JWT_SECRET_KEY")), nil
-		})
-
-		if err != nil {
-			fmt.Errorf("Error parsing token")
-		}
-
-		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			c.Set("username", claims["username"])
-			c.Next()
-		} else {
-			c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid token"})
-			c.Abort()
-		}
-	}
 }
