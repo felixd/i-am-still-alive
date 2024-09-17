@@ -26,9 +26,9 @@ func main() {
 		app_namespace: "flameit",
 		app_acronym:   "fitdps",
 
-		server_port: viper.GetString("FITDPS_SERVER_PORT"),
-		server_host: viper.GetString("FITDPS_SERVER_HOST"),
-		switch_life: viper.GetDuration("FITDPS_SWITCH_LIFE"),
+		server_port: viper.GetString("SERVER_PORT"),
+		server_host: viper.GetString("SERVER_HOST"),
+		switch_life: viper.GetDuration("SWITCH_LIFE"),
 	}
 
 	r := gin.Default()
