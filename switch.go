@@ -42,25 +42,21 @@ func CreateSwitch(c *gin.Context) {
 
 func UpdateSwitch(c *gin.Context) {
 	username, _ := c.Get("username")
-	var updateRequest struct {
-		Duration   int      `json:"duration"` // Hours
-		Recipients []string `json:"recipients"`
-		Message    string   `json:"message"`
-	}
 
-	if err := c.ShouldBindJSON(&updateRequest); err != nil {
+	r := Switch{}
+	if err := c.ShouldBindJSON(&r); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	if switchData, exists := data.Switches[username.(string)]; exists {
-		if updateRequest.Duration > 0 {
-			d := time.Duration(updateRequest.Duration) * time.Hour
+		if r.Duration > 0 {
+			d := time.Duration(r.Duration) * time.Hour
 			switchData.TriggerAt = time.Now().Add(d)
 			switchData.Duration = d
 		}
-		if len(updateRequest.Recipients) > 0 {
-			switchData.Recipients = updateRequest.Recipients
+		if len(r.Recipients) > 0 {
+			switchData.Recipients = r.Recipients
 		}
 		data.Switches[username.(string)] = switchData
 
