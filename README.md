@@ -6,7 +6,7 @@ Send message to recipients after Your death/inactivity.
 
 ```bash
 
-HOST=192.168.1.25
+HOST=localhost
 PORT=8080
 
 curl -X POST http://$HOST:$PORT/signup -d '{"username":"user1", "password":"password123"}'
