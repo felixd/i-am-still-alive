@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// https://pkg.go.dev/gopkg.in/gomail.v2#section-readme
 // SSL/TLS Email
 
 func SendEmail(recipients []string, subject, body string) error {
