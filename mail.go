@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 
@@ -21,6 +22,9 @@ func SendEmail(recipients []string, subject, body string) error {
 	msg := gomail.NewMessage()
 
 	// Set the sender and recipients
+	// Set the sender with label and email address (Format: "Label <email@example.com>")
+	from := fmt.Sprintf("%s <%s>", Config.SmtpFromLabel, Config.SmtpFromEmail)
+	msg.SetHeader("From", from)
 	msg.SetHeader("From", Config.SmtpFromEmail)
 	msg.SetHeader("To", recipients...)
 	msg.SetHeader("Subject", subject)
