@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -74,7 +75,7 @@ func UpdateSwitch(c *gin.Context) {
 func CheckinSwitch(c *gin.Context) {
 	username, _ := c.Get("username")
 	if switchData, exists := data.Switches[username.(string)]; exists {
-		switchData.TriggerAt = time.Now().Add(time.Hour * 24)
+		switchData.TriggerAt = time.Now().Add(time.Hour * switchData.Duration)
 		data.Switches[username.(string)] = switchData
 
 		if err := SaveData(Config.DataFile); err != nil {
@@ -104,14 +105,18 @@ func CheckExpiredSwitches() {
 	for {
 		for username, switchData := range data.Switches {
 			if time.Now().After(switchData.TriggerAt) {
-				subject := "Your Dead Man Switch has been triggered"
-				body := "This is to inform you that your Dead Man Switch has been triggered."
+				subject := "Dead Man Switch of '" + username + "' has been triggered"
+				body := "This is to inform you that Dead Man Switch of '" + username + "' has been triggered.\n"
+				body += "Message is contained between ### lines: \n"
+				body += "\n######################\n"
+				body += switchData.Message
+				body += "\n######################\n"
 
 				err := SendEmail(switchData.Recipients, subject, body)
 				if err != nil {
-					fmt.Printf("Error sending email to %s: %v\n", switchData.User, err)
+					log.Printf("Error sending email to %s: %v\n", switchData.User, err)
 				} else {
-					fmt.Printf("Emails sent to: %v\n", switchData.Recipients)
+					log.Printf("Emails sent to: %v\n", switchData.Recipients)
 				}
 
 				delete(data.Switches, username)
