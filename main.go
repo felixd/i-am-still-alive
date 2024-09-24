@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,7 +15,7 @@ func main() {
 	Config = NewConfiguration()
 
 	if Config.AppEnv == "development" {
-		fmt.Println(Config)
+		log.Println(Config)
 	}
 
 	if Config.AppEnv == "production" {
