@@ -17,7 +17,7 @@ type Switch struct {
 	Message    string        `json:"message"`
 }
 
-func CreateSwitch(c *gin.Context) {
+func SwitchCreate(c *gin.Context) {
 
 	r := Switch{}
 	if err := c.ShouldBindJSON(&r); err != nil {
@@ -41,7 +41,7 @@ func CreateSwitch(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Switch created", "trigger_at": triggerTime})
 }
 
-func UpdateSwitch(c *gin.Context) {
+func SwitchUpdate(c *gin.Context) {
 	username, _ := c.Get("username")
 
 	r := Switch{}
@@ -72,7 +72,7 @@ func UpdateSwitch(c *gin.Context) {
 	}
 }
 
-func CheckinSwitch(c *gin.Context) {
+func SwitchCheckin(c *gin.Context) {
 	username, _ := c.Get("username")
 	if switchData, exists := data.Switches[username.(string)]; exists {
 		switchData.TriggerAt = time.Now().Add(time.Hour * switchData.Duration)
@@ -89,7 +89,7 @@ func CheckinSwitch(c *gin.Context) {
 	}
 }
 
-func DeleteSwitch(c *gin.Context) {
+func SwitchDelete(c *gin.Context) {
 	username, _ := c.Get("username")
 	delete(data.Switches, username.(string))
 

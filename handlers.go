@@ -1,7 +1,9 @@
 package main
 
 import (
+	"crypto/sha256"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -12,6 +14,11 @@ import (
 
 func Health(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Healthy!"})
+}
+
+func HashPassword(p string) string {
+	sha256.Sum256([]byte(p))
+	return p
 }
 
 func Signup(c *gin.Context) {
@@ -31,7 +38,7 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	data.Users[user.Username] = user.Password
+	data.Users[user.Username] = HashPassword(user.Password)
 	if err := SaveData(Config.DataFile); err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not save data"})
@@ -39,6 +46,18 @@ func Signup(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Signup successful"})
+}
+
+func CheckinToken(c *gin.Context) {
+	token := c.Param("token")
+	log.Printf("Received token: %s", token)
+
+	// Perform token-related logic here
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Token received",
+		"token":   token,
+	})
 }
 
 func Login(c *gin.Context) {
@@ -52,7 +71,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	if pwd, exists := data.Users[user.Username]; !exists || pwd != user.Password {
+	if pwd, exists := data.Users[user.Username]; !exists || pwd != HashPassword(user.Password) {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid credentials"})
 		return
 	}

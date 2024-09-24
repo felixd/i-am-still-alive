@@ -32,15 +32,16 @@ func main() {
 	// Routes
 	r.POST("/signup", Signup)
 	r.POST("/login", Login)
-	r.GET("/health", Health)
+	r.GET("/health")
+	r.GET("/checkin/:token", CheckinToken)
 
 	authorized := r.Group("/switch")
 	authorized.Use(AuthMiddleware())
 	{
-		authorized.POST("/create", CreateSwitch)   // Create Dead Person Switch
-		authorized.GET("/checkin", CheckinSwitch)  // Update Switch timeout
-		authorized.DELETE("/delete", DeleteSwitch) // Remove Switch
-		authorized.PUT("/update", UpdateSwitch)    // Update Switch
+		authorized.POST("/create", SwitchCreate)   // Create Dead Person Switch
+		authorized.GET("/checkin", SwitchCheckin)  // Update Switch timeout
+		authorized.DELETE("/delete", SwitchDelete) // Remove Switch
+		authorized.PUT("/update", SwitchUpdate)    // Update Switch
 	}
 
 	// Periodic check for triggered switches
