@@ -10,6 +10,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func Health(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"message": "Healthy!"})
+}
+
 func Signup(c *gin.Context) {
 
 	var user struct {

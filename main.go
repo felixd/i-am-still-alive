@@ -32,6 +32,7 @@ func main() {
 	// Routes
 	r.POST("/signup", Signup)
 	r.POST("/login", Login)
+	r.GET("/health", Health)
 
 	authorized := r.Group("/switch")
 	authorized.Use(AuthMiddleware())
