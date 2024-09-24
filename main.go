@@ -40,6 +40,7 @@ func main() {
 	{
 		authorized.POST("/create", SwitchCreate)   // Create Dead Person Switch
 		authorized.GET("/checkin", SwitchCheckin)  // Update Switch timeout
+		authorized.GET("/token", SwitchToken)      // Generate Token for Checkins (without Auth)
 		authorized.DELETE("/delete", SwitchDelete) // Remove Switch
 		authorized.PUT("/update", SwitchUpdate)    // Update Switch
 	}
