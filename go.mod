@@ -1,4 +1,4 @@
-module flameit-deadpersonswitch
+module fit-dps
 
 go 1.23.1
 

@@ -5,7 +5,6 @@ I am still alive - Dead Man Switch Software
 Send message to recipients after Your death/inactivity.
 
 ```bash
-
 HOST=localhost
 PORT=8080
 
@@ -22,7 +21,6 @@ curl -X GET http://$HOST:$PORT/switch/checkin -H "Authorization: $TOKEN"
 
 # Remove switch
 curl -X DELETE http://$HOST:$PORT/switch/delete -H "Authorization: $TOKEN"
-
 ```
 
 ## Other projects
