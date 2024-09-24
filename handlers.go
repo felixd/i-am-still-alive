@@ -60,6 +60,10 @@ func CheckinToken(c *gin.Context) {
 	})
 }
 
+func SwitchToken(c *gin.Context) {
+
+}
+
 func Login(c *gin.Context) {
 	var user struct {
 		Username string `json:"username"`
