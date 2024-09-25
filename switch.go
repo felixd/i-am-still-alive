@@ -116,7 +116,7 @@ func CheckExpiredSwitches() {
 				if err != nil {
 					log.Printf("Error sending email to %s: %v\n", switchData.User, err)
 				} else {
-					log.Printf("Emails sent to: %v\n", switchData.Recipients)
+					log.Printf("Email sent to: %v\n", switchData.Recipients)
 				}
 
 				delete(data.Switches, username)

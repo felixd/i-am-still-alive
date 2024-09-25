@@ -60,7 +60,9 @@ func CheckinToken(c *gin.Context) {
 	})
 }
 
-func SwitchToken(c *gin.Context) {
+// Generate Token for updating switch without Authorization
+// r.GET("/checkin/:token", CheckinToken)
+func SwitchGenerateToken(c *gin.Context) {
 
 }
 
