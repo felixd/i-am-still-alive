@@ -10,6 +10,8 @@ import (
 )
 
 type Switch struct {
+	Id         int           `json:"id"`
+	Token      string        `json:"token"`
 	User       string        `json:"user"`
 	Duration   time.Duration `json:"duration"`
 	TriggerAt  time.Time     `json:"trigger_at"`

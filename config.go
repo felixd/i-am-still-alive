@@ -61,7 +61,7 @@ func NewConfiguration() *Configuration {
 		log.Fatal("Environment can't be loaded: ", err)
 	}
 
-	t := time.Duration(viper.GetInt64("SWITCH_DEFAULT_DURATION")) * time.Hour
+	t := time.Duration(viper.GetInt64("SWITCH_LIFE")) * time.Hour
 
 	if t > 0 {
 		c.SwitchDefaultDuration = t

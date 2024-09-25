@@ -33,7 +33,7 @@ func main() {
 	r.POST("/signup", Signup)
 	r.POST("/login", Login)
 	r.GET("/health")
-	// Update Switch (CheckIn) using Token (URL Token Update)
+	// Update Switch Timeout (CheckIn) using just HTTP GET method (URL Token Update)
 	r.GET("/checkin/:token", CheckinToken)
 
 	authorized := r.Group("/switch")
